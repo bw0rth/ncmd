@@ -11,8 +11,10 @@
 char* USAGE =
     "Starts a new instance of the windows command interpreter over a socket connection.\n"
     "\n"
-    "  RCMD [host] [port]\n"
-    "  RCMD [\\L] [host] [port]";
+    "NCMD [\\L] [host] [port]\n"
+    "\n"
+    "Any other flags will be passed to the underlying cmd process.\n"
+    "See CMD /? for more options.";
 
 SOCKET ConnectToServer()
 {
