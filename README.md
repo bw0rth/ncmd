@@ -8,15 +8,15 @@
     <img src="https://img.shields.io/badge/Made%20with-C-1f425f.svg">
   </a>
   <a href="https://gitHub.com/brenw0rth/ncmd/stargazers/">
-    <img src="https://badgen.net/github/stars/brenw0rth/rcmd">
+    <img src="https://badgen.net/github/stars/brenw0rth/ncmd">
   </a>
-  <a href="https://gitHub.com/brenw0rth/rcmd/network/members">
-    <img src="https://badgen.net/github/forks/brenw0rth/rcmd">
+  <a href="https://gitHub.com/brenw0rth/ncmd/network/members">
+    <img src="https://badgen.net/github/forks/brenw0rth/ncmd">
   </a>
 </p>
 
 ## Name
-**rcmd** - remote cmd shell for Windows.
+**ncmd** - remote cmd shell for Windows.
 
 ## Synopsis
 
