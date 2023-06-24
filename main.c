@@ -13,8 +13,16 @@ char* USAGE =
     "\n"
     "NCMD [\\L] [host] [port]\n"
     "\n"
+    "[\\L]  Listen for a connection from a remote host.\n"
+    "\n"
     "Any other flags will be passed to the underlying cmd process.\n"
     "See CMD /? for more options.";
+
+
+SOCKET ListenForClient()
+{
+    return INVALID_SOCKET;
+}
 
 SOCKET ConnectToServer()
 {
@@ -54,6 +62,7 @@ int main(int argc, char* argv[])
     STARTUPINFOA startupInfo;
     PROCESS_INFORMATION processInfo;
     SOCKET clientSocket;
+    int listen = 0;
 
     for (int i = 1; i < argc; i++)
     {
@@ -64,15 +73,29 @@ int main(int argc, char* argv[])
                 case '?':
                     printf("%s\n", USAGE);
                     return 0;
+                case 'L':
+                case 'l':
+                    listen = 1;
+                    break;
             }
         }
     }
-    return 0;
 
-    clientSocket = ConnectToServer();
-    if (clientSocket == INVALID_SOCKET)
+    if (listen)
     {
-        return 1;
+        socket = ListenForClient();
+        if (socket == INVALID_SOCKET)
+        {
+            return 1;
+        }
+    }
+    else
+    {
+        clientSocket = ConnectToServer();
+        if (clientSocket == INVALID_SOCKET)
+        {
+            return 1;
+        }
     }
 
     ZeroMemory(&startupInfo, sizeof(startupInfo));
