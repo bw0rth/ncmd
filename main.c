@@ -18,7 +18,6 @@ char* USAGE =
     "Any other flags will be passed to the underlying cmd process.\n"
     "See CMD /? for more options.";
 
-
 static SOCKET CreateSocket() {
     WSADATA wsaData;
     SOCKET sock;
@@ -39,16 +38,16 @@ static SOCKET CreateSocket() {
     return sock;
 }
 
-
-SOCKET ListenForClient() {
+SOCKET ListenForClient(char* host, int port) {
     SOCKET serverSocket, clientSocket;
-    struct sockaddr_in serverAddr, clientAddr;
+    struct sockaddr_in serverAddr, clientAddr, sin;
+    socklen_t sinLen = sizeof(sin);
     int clientAddrLen = sizeof(clientAddr);
 
     serverSocket = CreateSocket();
     serverAddr.sin_family = AF_INET;
-    serverAddr.sin_addr.s_addr = inet_addr(SERVER);
-    serverAddr.sin_port = htons(PORT);
+    serverAddr.sin_addr.s_addr = inet_addr(host);
+    serverAddr.sin_port = htons(port);
 
     if (bind(serverSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
         printf("Failed to bind socket\n");
@@ -64,7 +63,10 @@ SOCKET ListenForClient() {
         return INVALID_SOCKET;
     }
 
-    printf("Listening...\n");
+    if (getsockname(serverSocket, (struct sockaddr *)&sin, &sinLen) == -1)
+        perror("getsockname");
+    else
+        printf("Listening on %s port %d ...\n", host, ntohs(sin.sin_port));
 
     clientSocket = accept(serverSocket, (struct sockaddr*)&clientAddr, &clientAddrLen);
     if (clientSocket == INVALID_SOCKET) {
@@ -102,9 +104,13 @@ int main(int argc, char* argv[]) {
     PROCESS_INFORMATION processInfo;
     SOCKET sock;
     int listen = 0;
+    char* host = NULL;
+    int port = -1;
 
+    // parse command-line arguments ...
     for (int i = 1; i < argc; i++) {
         if (argv[i][0] == '/') {
+            // flag option
             switch (argv[i][1]) {
                 case '?':
                     printf("%s\n", USAGE);
@@ -114,13 +120,43 @@ int main(int argc, char* argv[]) {
                     listen = 1;
                     break;
             }
+        } else {
+            // positional argument
+            if (host == NULL) {
+                host = argv[i];
+                if (strcmp(host, "localhost") == 0)
+                    host = "127.0.0.1";
+                continue;
+            }
+
+            if (port == -1) {
+                port = atoi(argv[i]);
+                continue;
+            }
         }
     }
 
-    if (listen)
-        sock = ListenForClient();
-    else
+    if (listen) {
+        // ncmd.exe /L ...
+
+        // if no host or port, exit
+        if (host == NULL) {
+            // ncmd.exe /L
+            printf("%s\n", USAGE);
+            return 1;
+        }
+
+        // if no port given, use host as port.
+        if (port == -1) {
+            // ncmd.exe /L 8000
+            port = atoi(host);
+            host = "0.0.0.0";
+        }
+
+        sock = ListenForClient(host, port);
+    } else {
         sock = ConnectToServer();
+    }
 
     if (sock == INVALID_SOCKET)
         return 1;
