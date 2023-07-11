@@ -98,7 +98,6 @@ int main(int argc, char* argv[]) {
     STARTUPINFOA startupInfo;
     PROCESS_INFORMATION processInfo;
     SOCKET sock;
-    int listen = 0;
     char* host = NULL;
     int port = -1;
     char cmd[1024] = "cmd.exe /q";
