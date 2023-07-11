@@ -118,6 +118,10 @@ int main(int argc, char* argv[]) {
                 case 'l':
                     listen = 1;
                     break;
+                case 'C':
+                case 'c':
+                    C_arg = argv[++i];
+                    break;
             }
         } else {
             // positional argument
