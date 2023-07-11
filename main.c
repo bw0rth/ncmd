@@ -6,7 +6,7 @@
 #pragma comment(lib, "ws2_32.lib")
 
 char* USAGE =
-    "Starts a new instance of the windows command interpreter over the network.\n"
+    "Starts a new instance of the windows command interpreter over the network\n"
     "\n"
     "NCMD [\\L] [host] [port]\n"
     "\n"
