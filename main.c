@@ -165,8 +165,9 @@ int main(int argc, char* argv[]) {
         sock = ConnectToServer(host, port);
     }
 
-    if (sock == INVALID_SOCKET)
+    if (sock == INVALID_SOCKET) {
         return 1;
+    }
 
     ZeroMemory(&startupInfo, sizeof(startupInfo));
     startupInfo.cb = sizeof(startupInfo);
