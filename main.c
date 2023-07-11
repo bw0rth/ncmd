@@ -6,14 +6,12 @@
 #pragma comment(lib, "ws2_32.lib")
 
 char* USAGE =
-    "Starts a new instance of the windows command interpreter over a socket connection.\n"
+    "Starts a new instance of the windows command interpreter over the network.\n"
     "\n"
     "NCMD [\\L] [host] [port]\n"
     "\n"
-    "[\\L]  Listen for a connection from a remote host.\n"
-    "\n"
-    "Any other flags will be passed to the underlying cmd process.\n"
-    "See CMD /? for more options.";
+    "\\L  Listen mode, for inbound connects\n"
+    "\\C  Carries out the command specified by string and then terminates";
 
 static SOCKET CreateSocket() {
     WSADATA wsaData;
