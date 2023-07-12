@@ -16,9 +16,10 @@
 </p>
 
 ## Name
-**ncmd** - remote cmd shell for Windows.
+**NCMD** - Starts a new instance of the Windows command interpreter over the network
 
 ## Synopsis
+NCMD [\L] [host] [port]
 
 ## Description
 
