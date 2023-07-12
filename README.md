@@ -19,7 +19,9 @@
 **NCMD** - Starts a new instance of the Windows command interpreter over the network
 
 ## Synopsis
+```sh
 NCMD [\L] [host] [port]
+```
 
 ## Description
 
